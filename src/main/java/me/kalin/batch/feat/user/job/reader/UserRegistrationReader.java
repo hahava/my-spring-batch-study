@@ -29,6 +29,7 @@ public class UserRegistrationReader implements ItemReader<UserRegistration>, Ite
 
     @Override
     public void update(ExecutionContext executionContext) throws ItemStreamException {
+        //noop()
     }
 
     @Override

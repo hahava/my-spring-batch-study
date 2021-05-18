@@ -41,14 +41,14 @@ public class UserJob {
     public Step userRegistrationStep() {
         return stepBuilderFactory
                 .get("userRegistrationStep")
-                .chunk(CHUNK_SIZE)
+                .<UserRegistration, UserRegistration>chunk(CHUNK_SIZE)
                 .reader(new UserRegistrationReader(SAMPLE_USER_SIZE))
                 .writer(writeToCsv())
                 .build();
     }
 
     @Bean
-    public FlatFileItemWriter writeToCsv() {
+    public FlatFileItemWriter<UserRegistration> writeToCsv() {
         return new FlatFileItemWriterBuilder<UserRegistration>()
                 .name("writeToCsv")
                 .encoding(StandardCharsets.UTF_8.name())
