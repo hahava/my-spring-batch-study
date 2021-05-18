@@ -10,6 +10,7 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.PassThroughLineAggregator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
@@ -20,9 +21,13 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class UserJob {
     private static final int CHUNK_SIZE = 10;
+    private static final int SAMPLE_USER_SIZE = 100;
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+
+    @Value("${user.registration.path}")
+    private String sampleFilePath;
 
     @Bean
     public Job writeUserRegistrationInfos() {
@@ -36,18 +41,18 @@ public class UserJob {
     public Step userRegistrationStep() {
         return stepBuilderFactory
                 .get("userRegistrationStep")
-                .chunk(CHUNK_SIZE)
-                .reader(new UserRegistrationReader(100))
+                .<UserRegistration, UserRegistration>chunk(CHUNK_SIZE)
+                .reader(new UserRegistrationReader(SAMPLE_USER_SIZE))
                 .writer(writeToCsv())
                 .build();
     }
 
     @Bean
-    public FlatFileItemWriter writeToCsv() {
+    public FlatFileItemWriter<UserRegistration> writeToCsv() {
         return new FlatFileItemWriterBuilder<UserRegistration>()
                 .name("writeToCsv")
                 .encoding(StandardCharsets.UTF_8.name())
-                .resource(new FileSystemResource("src/main/resources/data/sample.csv"))
+                .resource(new FileSystemResource(sampleFilePath))
                 .append(true)
                 .lineAggregator(new PassThroughLineAggregator<>())
                 .headerCallback(writer -> writer.write(String.join(",", UserRegistration.headerName())))
