@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class UserJob {
     private static final int CHUNK_SIZE = 10;
+    private static final int SAMPLE_USER_SIZE = 100;
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
@@ -37,7 +38,7 @@ public class UserJob {
         return stepBuilderFactory
                 .get("userRegistrationStep")
                 .chunk(CHUNK_SIZE)
-                .reader(new UserRegistrationReader(100))
+                .reader(new UserRegistrationReader(SAMPLE_USER_SIZE))
                 .writer(writeToCsv())
                 .build();
     }
