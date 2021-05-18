@@ -71,17 +71,17 @@ public class UserRegistration implements Serializable {
 
     @Override
     public String toString() {
-        return +id + ","
-                + firstName + ","
-                + lastName + ","
-                + company + ","
-                + address + ","
-                + city + ","
-                + state + ","
-                + zip + ","
-                + country + ","
-                + url + ","
-                + phoneNumber + ","
+        return +id + ", "
+                + firstName + ", "
+                + lastName + ", "
+                + company + ", "
+                + address + ", "
+                + city + ", "
+                + state + ", "
+                + zip + ", "
+                + country + ", "
+                + url + ", "
+                + phoneNumber + ", "
                 + fax;
     }
 }
