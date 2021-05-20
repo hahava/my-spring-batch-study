@@ -1,8 +1,8 @@
 package me.kalin.batch.feat.user.job;
 
 import lombok.RequiredArgsConstructor;
-import me.kalin.batch.feat.user.listener.UserRegistrationWriterListener;
 import me.kalin.batch.feat.user.job.reader.UserRegistrationReader;
+import me.kalin.batch.feat.user.listener.UserRegistrationWriterListener;
 import me.kalin.batch.feat.user.model.UserRegistration;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 @Configuration
 @RequiredArgsConstructor
-public class UserJob {
+public class UserJobMemoryToFile {
     private static final int CHUNK_SIZE = 10;
     private static final int SAMPLE_USER_SIZE = 100;
 
@@ -48,7 +48,6 @@ public class UserJob {
                 .listener(new UserRegistrationWriterListener<>())
                 .build();
     }
-
     @Bean
     public FlatFileItemWriter<UserRegistration> writeToCsv() {
         return new FlatFileItemWriterBuilder<UserRegistration>()

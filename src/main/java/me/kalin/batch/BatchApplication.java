@@ -14,8 +14,7 @@ public class BatchApplication {
     private String jobNames;
 
     public static void main(String[] args) {
-        int exit = SpringApplication.exit(SpringApplication.run(BatchApplication.class, args));
-        System.exit(exit);
+        SpringApplication.run(BatchApplication.class, args);
     }
 
     @PostConstruct
