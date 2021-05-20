@@ -1,6 +1,7 @@
 package me.kalin.batch.feat.user.job;
 
 import lombok.RequiredArgsConstructor;
+import me.kalin.batch.feat.user.listener.UserRegistrationWriterListener;
 import me.kalin.batch.feat.user.job.reader.UserRegistrationReader;
 import me.kalin.batch.feat.user.model.UserRegistration;
 import org.springframework.batch.core.Job;
@@ -44,6 +45,7 @@ public class UserJob {
                 .<UserRegistration, UserRegistration>chunk(CHUNK_SIZE)
                 .reader(new UserRegistrationReader(SAMPLE_USER_SIZE))
                 .writer(writeToCsv())
+                .listener(new UserRegistrationWriterListener<>())
                 .build();
     }
 
