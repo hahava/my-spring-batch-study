@@ -19,9 +19,8 @@ public class BatchApplication {
 
     @PostConstruct
     public void validateJobNames() {
-        System.out.println(jobNames);
         if (jobNames.isEmpty() || jobNames.equals("NONE")) {
-            throw new IllegalStateException("Need --spring.batch.job.names=${jobNames} ...");
+//            throw new IllegalStateException("Need --spring.batch.job.names=${jobNames} ...");
         }
     }
 }
