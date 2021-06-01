@@ -5,9 +5,11 @@ import me.kalin.batch.feat.userregistration.reader.UserRegistrationReader;
 import me.kalin.batch.feat.userregistration.listener.UserRegistrationWriterListener;
 import me.kalin.batch.feat.userregistration.model.UserRegistration;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobParametersValidator;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.PassThroughLineAggregator;
@@ -35,6 +37,7 @@ public class UserRegistrationSavingJob {
         return jobBuilderFactory
                 .get("writeUserRegistrationInfo")
                 .start(userRegistrationStep())
+                .validator(userRegistrationSavingParameter())
                 .build();
     }
 
@@ -48,6 +51,7 @@ public class UserRegistrationSavingJob {
                 .listener(new UserRegistrationWriterListener<>())
                 .build();
     }
+
     @Bean
     public FlatFileItemWriter<UserRegistration> writeToCsv() {
         return new FlatFileItemWriterBuilder<UserRegistration>()
@@ -58,5 +62,12 @@ public class UserRegistrationSavingJob {
                 .lineAggregator(new PassThroughLineAggregator<>())
                 .headerCallback(writer -> writer.write(String.join(",", UserRegistration.headerName())))
                 .build();
+    }
+
+    @Bean
+    public JobParametersValidator userRegistrationSavingParameter() {
+        DefaultJobParametersValidator defaultJobParametersValidator = new DefaultJobParametersValidator();
+        defaultJobParametersValidator.setRequiredKeys(new String[]{"fileName"});
+        return defaultJobParametersValidator;
     }
 }
