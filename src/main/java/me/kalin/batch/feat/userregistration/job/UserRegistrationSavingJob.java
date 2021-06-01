@@ -1,6 +1,7 @@
 package me.kalin.batch.feat.userregistration.job;
 
 import lombok.RequiredArgsConstructor;
+import me.kalin.batch.common.listener.CommonJobExecutionListener;
 import me.kalin.batch.feat.userregistration.listener.UserRegistrationWriterListener;
 import me.kalin.batch.feat.userregistration.model.UserRegistration;
 import me.kalin.batch.feat.userregistration.reader.UserRegistrationReader;
@@ -12,6 +13,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.DefaultJobParametersValidator;
+import org.springframework.batch.core.listener.JobListenerFactoryBean;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.PassThroughLineAggregator;
@@ -39,6 +41,7 @@ public class UserRegistrationSavingJob {
     public Job writeUserRegistrationInfos() {
         return jobBuilderFactory
                 .get("writeUserRegistrationInfo")
+                .listener(JobListenerFactoryBean.getListener(new CommonJobExecutionListener()))
                 .start(userRegistrationStep())
                 .validator(userRegistrationSavingParameter())
                 .build();

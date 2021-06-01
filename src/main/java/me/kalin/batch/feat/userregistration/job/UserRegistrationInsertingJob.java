@@ -1,12 +1,14 @@
 package me.kalin.batch.feat.userregistration.job;
 
 import lombok.RequiredArgsConstructor;
+import me.kalin.batch.common.listener.CommonJobExecutionListener;
 import me.kalin.batch.feat.userregistration.model.UserRegistration;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.listener.JobListenerFactoryBean;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -36,6 +38,7 @@ public class UserRegistrationInsertingJob {
     public Job addUserRegistrationJob() {
         return jobBuilderFactory
                 .get("addUserRegistrationJob")
+                .listener(JobListenerFactoryBean.getListener(new CommonJobExecutionListener()))
                 .start(userRegistrationSteps())
                 .build();
     }
