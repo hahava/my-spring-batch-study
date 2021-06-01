@@ -1,7 +1,7 @@
-package me.kalin.batch.feat.user.job;
+package me.kalin.batch.feat.userregistration.job;
 
 import lombok.RequiredArgsConstructor;
-import me.kalin.batch.feat.user.model.UserRegistration;
+import me.kalin.batch.feat.userregistration.model.UserRegistration;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -21,7 +21,7 @@ import java.nio.charset.StandardCharsets;
 
 @Configuration
 @RequiredArgsConstructor
-public class UserJobFileToDb {
+public class UserRegistrationInsertingJob {
     private static final int CHUNK_SIZE = 10;
 
     private final JobBuilderFactory jobBuilderFactory;

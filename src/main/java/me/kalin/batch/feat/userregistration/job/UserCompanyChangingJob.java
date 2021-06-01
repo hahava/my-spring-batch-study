@@ -1,4 +1,4 @@
-package me.kalin.batch.feat.user.job;
+package me.kalin.batch.feat.userregistration.job;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
-public class ChangeUserCompanyJob {
+public class UserCompanyChangingJob {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
     private final DataSource dataSource;

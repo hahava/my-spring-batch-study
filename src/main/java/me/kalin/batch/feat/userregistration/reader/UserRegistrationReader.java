@@ -1,8 +1,8 @@
-package me.kalin.batch.feat.user.job.reader;
+package me.kalin.batch.feat.userregistration.reader;
 
 import lombok.extern.slf4j.Slf4j;
-import me.kalin.batch.feat.user.UserRegistrationGenerator;
-import me.kalin.batch.feat.user.model.UserRegistration;
+import me.kalin.batch.common.helper.UserRegistrationGenerator;
+import me.kalin.batch.feat.userregistration.model.UserRegistration;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemStreamException;

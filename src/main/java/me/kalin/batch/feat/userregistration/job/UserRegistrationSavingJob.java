@@ -1,9 +1,9 @@
-package me.kalin.batch.feat.user.job;
+package me.kalin.batch.feat.userregistration.job;
 
 import lombok.RequiredArgsConstructor;
-import me.kalin.batch.feat.user.job.reader.UserRegistrationReader;
-import me.kalin.batch.feat.user.listener.UserRegistrationWriterListener;
-import me.kalin.batch.feat.user.model.UserRegistration;
+import me.kalin.batch.feat.userregistration.reader.UserRegistrationReader;
+import me.kalin.batch.feat.userregistration.listener.UserRegistrationWriterListener;
+import me.kalin.batch.feat.userregistration.model.UserRegistration;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 
 @Configuration
 @RequiredArgsConstructor
-public class UserJobMemoryToFile {
+public class UserRegistrationSavingJob {
     private static final int CHUNK_SIZE = 10;
     private static final int SAMPLE_USER_SIZE = 100;
 

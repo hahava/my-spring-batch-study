@@ -1,4 +1,4 @@
-package me.kalin.batch.feat.user.listener;
+package me.kalin.batch.feat.userregistration.listener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ItemWriteListener;
