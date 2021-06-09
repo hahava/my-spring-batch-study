@@ -14,6 +14,8 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.listener.JobListenerFactoryBean;
+import org.springframework.batch.core.step.tasklet.SystemCommandTasklet;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.PassThroughLineAggregator;
@@ -23,6 +25,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 
 import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
+
+import static java.text.MessageFormat.format;
 
 @Configuration
 @RequiredArgsConstructor
@@ -39,10 +44,11 @@ public class UserRegistrationSavingJob {
 
     @Bean
     public Job writeUserRegistrationInfos() {
-        return jobBuilderFactory
+            return jobBuilderFactory
                 .get("writeUserRegistrationInfo")
                 .listener(JobListenerFactoryBean.getListener(new CommonJobExecutionListener()))
-                .start(userRegistrationStep())
+                .start(removeSampleFileStep())
+                .next(userRegistrationStep())
                 .validator(userRegistrationSavingParameter())
                 .build();
     }
@@ -56,6 +62,23 @@ public class UserRegistrationSavingJob {
                 .writer(writeToCsv(null))
                 .listener(new UserRegistrationWriterListener<>())
                 .build();
+    }
+
+    @Bean
+    public Step removeSampleFileStep() {
+        return stepBuilderFactory
+            .get("removeSampleFile")
+            .tasklet(removeSampleFileTasklet(null))
+            .build();
+    }
+
+    @StepScope
+    @Bean
+    public Tasklet removeSampleFileTasklet(@Value("#{jobParameters['fileName']}") String fileName) {
+        SystemCommandTasklet systemCommandTasklet = new SystemCommandTasklet();
+        systemCommandTasklet.setCommand(format("rm {0}", new FileSystemResource(getFileName(fileName)).getPath()));
+        systemCommandTasklet.setTimeout(5000);
+        return systemCommandTasklet;
     }
 
     @StepScope
