@@ -19,13 +19,16 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.PassThroughLineAggregator;
+import org.springframework.batch.repeat.CompletionPolicy;
+import org.springframework.batch.repeat.policy.CompositeCompletionPolicy;
+import org.springframework.batch.repeat.policy.SimpleCompletionPolicy;
+import org.springframework.batch.repeat.policy.TimeoutTerminationPolicy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
 
 import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
 
 import static java.text.MessageFormat.format;
 
@@ -57,7 +60,7 @@ public class UserRegistrationSavingJob {
     public Step userRegistrationStep() {
         return stepBuilderFactory
                 .get("userRegistrationStep")
-                .<UserRegistration, UserRegistration>chunk(CHUNK_SIZE)
+                .<UserRegistration, UserRegistration>chunk(completionPolicy())
                 .reader(new UserRegistrationReader(SAMPLE_USER_SIZE))
                 .writer(writeToCsv(null))
                 .listener(new UserRegistrationWriterListener<>())
@@ -100,6 +103,18 @@ public class UserRegistrationSavingJob {
         defaultJobParametersValidator.setRequiredKeys(new String[]{"fileName"});
         defaultJobParametersValidator.afterPropertiesSet();
         return defaultJobParametersValidator;
+    }
+
+    @Bean
+    public CompletionPolicy completionPolicy() {
+        CompositeCompletionPolicy compositeCompletionPolicy = new CompositeCompletionPolicy();
+        compositeCompletionPolicy.setPolicies(
+            new CompletionPolicy[] {
+                new TimeoutTerminationPolicy(5),
+                new SimpleCompletionPolicy(CHUNK_SIZE)
+            }
+        );
+        return compositeCompletionPolicy;
     }
 
     private String getFileName(String fileName) {
