@@ -1,11 +1,14 @@
-package me.kalin.batch.feat.user.job;
+package me.kalin.batch.feat.userregistration.job;
 
 import lombok.RequiredArgsConstructor;
-import me.kalin.batch.feat.user.model.UserRegistration;
+import me.kalin.batch.common.listener.CommonJobExecutionListener;
+import me.kalin.batch.feat.userregistration.model.UserRegistration;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.listener.JobListenerFactoryBean;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -21,7 +24,7 @@ import java.nio.charset.StandardCharsets;
 
 @Configuration
 @RequiredArgsConstructor
-public class UserJobFileToDb {
+public class UserRegistrationInsertingJob {
     private static final int CHUNK_SIZE = 10;
 
     private final JobBuilderFactory jobBuilderFactory;
@@ -29,12 +32,13 @@ public class UserJobFileToDb {
     private final DataSource dataSource;
 
     @Value("${user.registration.path}")
-    private String sampleFilePath;
+    private String savingFilePath;
 
     @Bean
     public Job addUserRegistrationJob() {
         return jobBuilderFactory
                 .get("addUserRegistrationJob")
+                .listener(JobListenerFactoryBean.getListener(new CommonJobExecutionListener()))
                 .start(userRegistrationSteps())
                 .build();
     }
@@ -44,7 +48,7 @@ public class UserJobFileToDb {
         return stepBuilderFactory
                 .get("userRegistrationStep")
                 .<UserRegistration, UserRegistration>chunk(CHUNK_SIZE)
-                .reader(readCsvFile())
+                .reader(readCsvFile(null))
                 .writer(insertUserRegistration())
                 .build();
     }
@@ -62,12 +66,13 @@ public class UserJobFileToDb {
                 .build();
     }
 
+    @StepScope
     @Bean
-    public FlatFileItemReader<UserRegistration> readCsvFile() {
+    public FlatFileItemReader<UserRegistration> readCsvFile(@Value("#{jobParameters['fileName']}") String fileName) {
         return new FlatFileItemReaderBuilder<UserRegistration>()
                 .name("readCsv")
                 .encoding(StandardCharsets.UTF_8.name())
-                .resource(new FileSystemResource(sampleFilePath))
+                .resource(new FileSystemResource(savingFilePath.concat(fileName)))
                 .linesToSkip(1)
                 .delimited()
                 .delimiter(DelimitedLineTokenizer.DELIMITER_COMMA)
@@ -88,5 +93,4 @@ public class UserJobFileToDb {
                         .build())
                 .build();
     }
-
 }
