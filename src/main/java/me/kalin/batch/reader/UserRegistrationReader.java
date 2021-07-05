@@ -1,7 +1,7 @@
 package me.kalin.batch.reader;
 
 import lombok.extern.slf4j.Slf4j;
-import me.kalin.batch.common.helper.UserRegistrationGenerator;
+import me.kalin.batch.common.UserRegistrationGenerator;
 import me.kalin.batch.model.UserRegistration;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemReader;
@@ -12,6 +12,11 @@ import java.util.List;
 
 @Slf4j
 public class UserRegistrationReader implements ItemReader<UserRegistration>, ItemStreamReader<UserRegistration> {
+    private static final int DEFAULT_NUMBER_OF_USERS = 100;
+
+    public UserRegistrationReader() {
+        this.numberOfUsers = DEFAULT_NUMBER_OF_USERS;
+    }
 
     public UserRegistrationReader(int numberOfUsers) {
         this.numberOfUsers = numberOfUsers;

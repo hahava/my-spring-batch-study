@@ -61,7 +61,7 @@ public class UserRegistrationSavingJob {
         return stepBuilderFactory
                 .get("userRegistrationStep")
                 .<UserRegistration, UserRegistration>chunk(completionPolicy())
-                .reader(new UserRegistrationReader(SAMPLE_USER_SIZE))
+                .reader(userRegistrationReader())
                 .writer(writeToCsv(null))
                 .listener(new UserRegistrationWriterListener<>())
                 .build();
@@ -75,8 +75,14 @@ public class UserRegistrationSavingJob {
             .build();
     }
 
-    @StepScope
     @Bean
+    @StepScope
+    public UserRegistrationReader userRegistrationReader() {
+        return new UserRegistrationReader(SAMPLE_USER_SIZE);
+    }
+
+    @Bean
+    @StepScope
     public Tasklet removeSampleFileTasklet(@Value("#{jobParameters['fileName']}") String fileName) {
         SystemCommandTasklet systemCommandTasklet = new SystemCommandTasklet();
         systemCommandTasklet.setCommand(format("rm {0}", new FileSystemResource(getFileName(fileName)).getPath()));
@@ -84,8 +90,8 @@ public class UserRegistrationSavingJob {
         return systemCommandTasklet;
     }
 
-    @StepScope
     @Bean
+    @StepScope
     public FlatFileItemWriter<UserRegistration> writeToCsv(@Value("#{jobParameters['fileName']}") String fileName) {
         return new FlatFileItemWriterBuilder<UserRegistration>()
                 .name("writeToCsv")

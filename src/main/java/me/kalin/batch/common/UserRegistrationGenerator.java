@@ -1,4 +1,4 @@
-package me.kalin.batch.common.helper;
+package me.kalin.batch.common;
 
 import me.kalin.batch.model.UserRegistration;
 
