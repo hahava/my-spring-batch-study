@@ -2,7 +2,7 @@ package me.kalin.batch.job;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import me.kalin.batch.listener.CommonJobExecutionListener;
+import me.kalin.batch.listener.JobLoggingListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -31,7 +31,7 @@ public class UserCompanyChangingJob {
     public Job changeUserCompany() {
         return jobBuilderFactory
                 .get("changeUserCompany")
-                .listener(JobListenerFactoryBean.getListener(new CommonJobExecutionListener()))
+                .listener(JobListenerFactoryBean.getListener(new JobLoggingListener()))
                 .start(changeUserCompanyStep())
                 .build();
     }

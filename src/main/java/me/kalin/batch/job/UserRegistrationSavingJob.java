@@ -1,7 +1,7 @@
 package me.kalin.batch.job;
 
 import lombok.RequiredArgsConstructor;
-import me.kalin.batch.listener.CommonJobExecutionListener;
+import me.kalin.batch.listener.JobLoggingListener;
 import me.kalin.batch.listener.UserRegistrationWriterListener;
 import me.kalin.batch.model.UserRegistration;
 import me.kalin.batch.reader.UserRegistrationReader;
@@ -49,7 +49,7 @@ public class UserRegistrationSavingJob {
     public Job writeUserRegistrationInfos() {
             return jobBuilderFactory
                 .get("writeUserRegistrationInfo")
-                .listener(JobListenerFactoryBean.getListener(new CommonJobExecutionListener()))
+                .listener(JobListenerFactoryBean.getListener(new JobLoggingListener()))
                 .start(removeSampleFileStep())
                 .next(userRegistrationStep())
                 .validator(userRegistrationSavingParameter())

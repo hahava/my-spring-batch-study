@@ -1,7 +1,7 @@
 package me.kalin.batch.job;
 
 import lombok.RequiredArgsConstructor;
-import me.kalin.batch.listener.CommonJobExecutionListener;
+import me.kalin.batch.listener.JobLoggingListener;
 import me.kalin.batch.model.UserRegistration;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -29,7 +29,6 @@ public class UserRegistrationInsertingJob {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
-    private final CommonJobExecutionListener commonJobExecutionListener;
     private final DataSource dataSource;
 
     @Value("${user.registration.path}")
@@ -39,7 +38,7 @@ public class UserRegistrationInsertingJob {
     public Job addUserRegistrationJob() {
         return jobBuilderFactory
                 .get("addUserRegistrationJob")
-                .listener(JobListenerFactoryBean.getListener(new CommonJobExecutionListener()))
+                .listener(JobListenerFactoryBean.getListener(new JobLoggingListener()))
                 .start(userRegistrationSteps())
                 .build();
     }
