@@ -1,6 +1,7 @@
 package me.kalin.batch.feat.userregistration.job;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import me.kalin.batch.common.listener.CommonJobExecutionListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -8,9 +9,11 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.listener.JobListenerFactoryBean;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.JdbcPagingItemReader;
+import org.springframework.batch.item.database.PagingQueryProvider;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
-import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
+import org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -44,13 +47,14 @@ public class UserCompanyChangingJob {
     }
 
     @Bean
-    public JdbcCursorItemReader<Map<String, Object>> readUserCompany() {
-        return new JdbcCursorItemReaderBuilder<Map<String, Object>>()
-                .name("readUserCompany")
-                .dataSource(dataSource)
-                .sql("SELECT id FROM USER_REGISTRATION WHERE COMPANY = 'Samsung'")
-                .rowMapper((resultSet, i) -> Map.of("id", resultSet.getObject("id")))
-                .build();
+    public JdbcPagingItemReader<Map<String, Object>> readUserCompany() {
+        return new JdbcPagingItemReaderBuilder<Map<String, Object>>()
+            .name("readUserCompany")
+            .dataSource(dataSource)
+            .queryProvider(sqlPagingQueryProviderFactoryBean())
+            .rowMapper((resultSet, i) -> Map.of("id", resultSet.getObject("id")))
+            .pageSize(10)
+            .build();
     }
 
     @Bean
@@ -60,5 +64,18 @@ public class UserCompanyChangingJob {
                 .sql("UPDATE USER_REGISTRATION SET COMPANY = 'SDS' WHERE id = :id")
                 .columnMapped()
                 .build();
+
+    }
+
+    @Bean
+    @SneakyThrows
+    public PagingQueryProvider sqlPagingQueryProviderFactoryBean() {
+        SqlPagingQueryProviderFactoryBean factoryBean = new SqlPagingQueryProviderFactoryBean();
+        factoryBean.setSelectClause("SELECT id");
+        factoryBean.setFromClause("FROM USER_REGISTRATION");
+        factoryBean.setWhereClause("WHERE COMPANY = 'Samsung'");
+        factoryBean.setSortKey("id");
+        factoryBean.setDataSource(dataSource);
+        return factoryBean.getObject();
     }
 }
