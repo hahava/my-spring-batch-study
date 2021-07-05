@@ -1,4 +1,4 @@
-package me.kalin.batch.feat.userregistration.model;
+package me.kalin.batch.model;
 
 import lombok.Builder;
 import lombok.Getter;

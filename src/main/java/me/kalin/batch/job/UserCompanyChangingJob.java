@@ -1,8 +1,8 @@
-package me.kalin.batch.feat.userregistration.job;
+package me.kalin.batch.job;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import me.kalin.batch.common.listener.CommonJobExecutionListener;
+import me.kalin.batch.listener.CommonJobExecutionListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;

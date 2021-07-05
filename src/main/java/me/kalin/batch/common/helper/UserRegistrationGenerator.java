@@ -1,6 +1,6 @@
 package me.kalin.batch.common.helper;
 
-import me.kalin.batch.feat.userregistration.model.UserRegistration;
+import me.kalin.batch.model.UserRegistration;
 
 import java.util.ArrayList;
 import java.util.List;

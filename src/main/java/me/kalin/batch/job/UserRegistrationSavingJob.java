@@ -1,10 +1,10 @@
-package me.kalin.batch.feat.userregistration.job;
+package me.kalin.batch.job;
 
 import lombok.RequiredArgsConstructor;
-import me.kalin.batch.common.listener.CommonJobExecutionListener;
-import me.kalin.batch.feat.userregistration.listener.UserRegistrationWriterListener;
-import me.kalin.batch.feat.userregistration.model.UserRegistration;
-import me.kalin.batch.feat.userregistration.reader.UserRegistrationReader;
+import me.kalin.batch.listener.CommonJobExecutionListener;
+import me.kalin.batch.listener.UserRegistrationWriterListener;
+import me.kalin.batch.model.UserRegistration;
+import me.kalin.batch.reader.UserRegistrationReader;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParametersValidator;
